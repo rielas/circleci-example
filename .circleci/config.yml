@@ -6,13 +6,33 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
-      - run: sudo npm install @neuralegion/nexploit-cli -g --unsafe-perm=true || true
+      - run:
+          name: Install Docker Compose
+          command: |
+            sudo apt update
+            sudo curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
+            sudo npm install @neuralegion/nexploit-cli -g --unsafe-perm=true || true
+      - setup_remote_docker
+      - run:
+         name: Save eniroment variables
+         command: |
+            printf "NEXPLOIT_TOKEN=$NEXPLOIT_TOKEN\nREPEATER=$REPEATER\n" > .env
+            cat .env
+      - run:
+         name: Docker-Compose
+         command: |
+            echo $NEXPLOIT_TOKEN
+            echo $REPEATER
+            docker-compose --env-file=.env up -d
+            docker-compose config
       - run:
           name: Starting Nexploit scan 🏁
           command: >
               echo export SCAN_ID=$(nexploit-cli scan:run --token $NEXPLOIT_TOKEN
-              --name "BC Scan from CircleCI"
-              --crawler https://brokencrystals.com/
+              --repeater $REPEATER
+              --name "CIRCLECI TEST"
+              --crawler http://juiceshop.local:3000
               --smart) >> "$BASH_ENV"
       - run: 
           name: Get the output scan url 🔗
@@ -31,4 +51,3 @@ jobs:
           when: on_fail
           command: |
               nexploit-cli scan:stop --token $NEXPLOIT_TOKEN ${SCAN_ID}
-
