@@ -1,3 +1,3 @@
 # circleci-example
 Start scan with nexploit-cli
-testbug2
+testbug3
