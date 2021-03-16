@@ -32,7 +32,7 @@ jobs:
               echo export SCAN_ID=$(nexploit-cli scan:run --token $NEXPLOIT_TOKEN
               --repeater $REPEATER
               --name "CIRCLECI TEST"
-              --crawler http://juiceshop.local:3000
+              --crawler http://brokencrystals.local:8000
               --smart) >> "$BASH_ENV"
       - run: 
           name: Get the output scan url 🔗
