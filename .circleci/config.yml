@@ -14,6 +14,7 @@ jobs:
               --name "BC Scan from CircleCI"
               --crawler https://brokencrystals.com/
               --smart) >> "$BASH_ENV"
+              echo $BASH_ENV
       - run: 
           name: Get the output scan url 🔗
           command: |
